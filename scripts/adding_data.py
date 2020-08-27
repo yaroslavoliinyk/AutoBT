@@ -1,5 +1,4 @@
 import datetime
-import sqlite3
 import time
 
 from selenium.webdriver.common.keys import Keys
@@ -10,18 +9,15 @@ AUTH_TABLE = "Authentication"
 
 class DataAdder:
     
-    def __init__(self, db_name, website_name, driver):
-        self.db_name = db_name
+    def __init__(self, db_name, website_name, driver, db_connection):
         self.website_name = website_name
         self.tasks = []
         self.driver = driver
-        self.connection = sqlite3.connect(self.db_name)
+        self.connection = db_connection
         self.conn = self.connection.cursor()
-        self.__update_datetimes()
-        self.conn.close()
-        
 
-    def __update_datetimes(self):
+
+    def update_datetimes(self):
         self.conn.execute("SELECT * FROM Tasks;")
         tasks_table = self.conn.fetchall()
         self.tasks.extend(self.__get_tasks(tasks_table))
@@ -32,6 +28,7 @@ class DataAdder:
         for task_id in self.tasks:
             self.__update_task_dt(task_id, TASKS_TABLE)
         
+
     def __update_task_dt(self, task_id, task_tb):
         website_page = self.website_name + "/issues/" + str(task_id)
         self.driver.get(website_page)

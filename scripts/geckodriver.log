@@ -474,3 +474,51 @@ console.error: SearchCache: "_readCacheFile: Error reading cache file:" (new Err
 console.error: SearchCache: "_readCacheFile: Error reading cache file:" (new Error("", "(unknown module)"))
 1598525289135	Marionette	INFO	Listening on port 64863
 1598525289151	Marionette	WARN	TLS certificate errors will be ignored for this session
+Exiting due to channel error.
+[GFX1-]: Receive IPC close with reason=AbnormalShutdown
+Exiting due to channel error.
+[GFX1-]: Receive IPC close with reason=AbnormalShutdown
+Exiting due to channel error.
+1598526660859	Marionette	INFO	Stopped listening on port 56271
+1598526662826	Marionette	INFO	Stopped listening on port 61546
+1598526666500	Marionette	INFO	Stopped listening on port 61835
+1598526668172	Marionette	INFO	Stopped listening on port 62062
+1598526670056	Marionette	INFO	Stopped listening on port 49320
+1598526671487	Marionette	INFO	Stopped listening on port 52679
+1598526673624	Marionette	INFO	Stopped listening on port 54801
+1598526675327	Marionette	INFO	Stopped listening on port 61841
+1598526677336	Marionette	INFO	Stopped listening on port 62299
+1598526681142	Marionette	INFO	Stopped listening on port 63676
+1598526683072	Marionette	INFO	Stopped listening on port 64552
+1598526686333	Marionette	INFO	Stopped listening on port 57004
+1598526687981	Marionette	INFO	Stopped listening on port 62283
+1598526690283	Marionette	INFO	Stopped listening on port 63236
+1598526693168	Marionette	INFO	Stopped listening on port 57115
+1598526695965	Marionette	INFO	Stopped listening on port 57710
+1598527302625	geckodriver	INFO	Listening on 127.0.0.1:59876
+1598527303637	mozrunner::runner	INFO	Running command: "/Applications/Firefox.app/Contents/MacOS/firefox-bin" "--marionette" "-foreground" "-no-remote" "-profile" "/var/folders/yc/gj8rkfbx1hg5h5jwhlgq4zh00000gn/T/rust_mozprofiler59F5h"
+console.error: SearchCache: "_readCacheFile: Error reading cache file:" (new Error("", "(unknown module)"))
+1598527306448	Marionette	INFO	Listening on port 59887
+1598527306553	Marionette	WARN	TLS certificate errors will be ignored for this session
+1598527384865	geckodriver	INFO	Listening on 127.0.0.1:60271
+1598527385875	mozrunner::runner	INFO	Running command: "/Applications/Firefox.app/Contents/MacOS/firefox-bin" "--marionette" "-foreground" "-no-remote" "-profile" "/var/folders/yc/gj8rkfbx1hg5h5jwhlgq4zh00000gn/T/rust_mozprofileFynY11"
+console.error: SearchCache: "_readCacheFile: Error reading cache file:" (new Error("", "(unknown module)"))
+1598527388399	Marionette	INFO	Listening on port 60282
+1598527388478	Marionette	WARN	TLS certificate errors will be ignored for this session
+1598527460344	geckodriver	INFO	Listening on 127.0.0.1:60652
+1598527461356	mozrunner::runner	INFO	Running command: "/Applications/Firefox.app/Contents/MacOS/firefox-bin" "--marionette" "-foreground" "-no-remote" "-profile" "/var/folders/yc/gj8rkfbx1hg5h5jwhlgq4zh00000gn/T/rust_mozprofileEfWBAh"
+console.error: SearchCache: "_readCacheFile: Error reading cache file:" (new Error("", "(unknown module)"))
+1598527463918	Marionette	INFO	Listening on port 60664
+1598527464882	Marionette	WARN	TLS certificate errors will be ignored for this session
+Exiting due to channel error.
+[GFX1-]: Receive IPC close with reason=AbnormalShutdown
+Exiting due to channel error.
+[GFX1-]: Receive IPC close with reason=AbnormalShutdown
+Exiting due to channel error.
+1598527602954	geckodriver	INFO	Listening on 127.0.0.1:61303
+1598527603964	mozrunner::runner	INFO	Running command: "/Applications/Firefox.app/Contents/MacOS/firefox-bin" "--marionette" "-foreground" "-no-remote" "-profile" "/var/folders/yc/gj8rkfbx1hg5h5jwhlgq4zh00000gn/T/rust_mozprofileponyRt"
+console.error: SearchCache: "_readCacheFile: Error reading cache file:" (new Error("", "(unknown module)"))
+1598527606571	Marionette	INFO	Listening on port 61314
+1598527606729	Marionette	WARN	TLS certificate errors will be ignored for this session
+1598530614082	addons.xpi	ERROR	System addon update list error Error: Failed downloading XML, status: 0, reason: error
+1598531269924	Marionette	INFO	Stopped listening on port 61314
