@@ -7,14 +7,18 @@ from selenium.common.exceptions import NoSuchElementException
 TASKS_TABLE = "Tasks"
 AUTH_TABLE = "Authentication"
 
+
 class DataAdder:
     
-    def __init__(self, db_name, website_name, driver, db_connection):
+
+    def __init__(self, db_name, website_name, driver, db_connection, prev_month, this_month):
         self.website_name = website_name
         self.tasks = []
         self.driver = driver
         self.connection = db_connection
         self.conn = self.connection.cursor()
+        self.prev_month = prev_month
+        self.this_month = this_month
 
 
     def update_datetimes(self):
@@ -28,6 +32,21 @@ class DataAdder:
         for task_id in self.tasks:
             self.__update_task_dt(task_id, TASKS_TABLE)
         
+
+    def update_months_hours(self):
+        self.__make_months_hours(self.prev_month)
+        self.__make_months_hours(self.this_month)
+        print(self.prev_month.get_hours())
+        print(self.this_month.get_hours())
+        time.sleep(300)
+
+
+    def __make_months_hours(self, month):
+        if(month.get_flag()):
+            self.driver.get(month.get_link())
+            elem = self.driver.find_element_by_class_name("hours")
+            month.set_hours(float(elem.text))
+
 
     def __update_task_dt(self, task_id, task_tb):
         website_page = self.website_name + "/issues/" + str(task_id)
