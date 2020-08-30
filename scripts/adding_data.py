@@ -38,6 +38,8 @@ class DataAdder:
         self.__make_months_hours(self.this_month)
         print(self.prev_month.get_hours())
         print(self.this_month.get_hours())
+        print(self.prev_month.get_last_commit())
+        print(self.this_month.get_last_commit())
         time.sleep(300)
 
 
@@ -46,6 +48,12 @@ class DataAdder:
             self.driver.get(month.get_link())
             elem = self.driver.find_element_by_class_name("hours")
             month.set_hours(float(elem.text))
+            try: 
+                elem = self.driver.find_element_by_class_name("spent_on")
+                month.set_last_commit(elem.text)
+            except NoSuchElementException as e:
+                print(e)
+                
 
 
     def __update_task_dt(self, task_id, task_tb):
