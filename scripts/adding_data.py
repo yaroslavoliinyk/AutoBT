@@ -44,15 +44,17 @@ class DataAdder:
 
 
     def __make_months_hours(self, month):
-        if(month.get_flag()):
-            self.driver.get(month.get_link())
-            elem = self.driver.find_element_by_class_name("hours")
-            month.set_hours(float(elem.text))
-            try: 
-                elem = self.driver.find_element_by_class_name("spent_on")
-                month.set_last_commit(elem.text)
-            except NoSuchElementException as e:
-                print(e)
+        #! Not correct. Also applies for current month.
+        #! Since it's not obligatory to start new month from date 1
+        # Corrected above error   
+        self.driver.get(month.get_link())
+        elem = self.driver.find_element_by_class_name("hours")
+        month.set_hours(float(elem.text))
+        try: 
+            elem = self.driver.find_element_by_class_name("spent_on")
+            month.set_last_commit(datetime.datetime.strptime(elem.text, '%Y-%m-%d %H:%M.%f'))
+        except NoSuchElementException as e:
+            month.set_last_commit(None)
                 
 
 

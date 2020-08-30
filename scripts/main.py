@@ -17,11 +17,13 @@ connection = sqlite3.connect(DB_NAME)
 class MainConstruction:
     def __init__(self):
         self.data_adder = DataAdder(DB_NAME, WEBSITE, driver, connection, PREVIOUS_MONTH, THIS_MONTH)
-        
+        self.problems_list = []
 
     def update_data(self):
         self.data_adder.update_datetimes()
         self.data_adder.update_months_hours()
+
+    
 
 
 if __name__ == "__main__":
