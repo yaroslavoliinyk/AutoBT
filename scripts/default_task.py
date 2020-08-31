@@ -13,7 +13,7 @@ class Default_Task:
         # each task can have a date of implementation
         self.date = None
         # The random time estimated for the concrete task
-        self.random_time = None
+        self.random_time = self.__get_inner_random_time()
 
     #------- These two values are filled later on --------
 
@@ -46,7 +46,7 @@ class Default_Task:
         return self.to_time
 
 
-    def get_random_time(self):
+    def __get_inner_random_time(self):
         delta_range = self.get_to_time() - self.get_from_time()
         # The same as divide by 0.25, since all the time has to be dividable by 0.25
         delta_range *= 4
@@ -55,8 +55,9 @@ class Default_Task:
         random_range_time = randrange(delta_range)
         # Translate again into time
         random_range_time *= 0.25
-    
-        return self.get_from_time() + random_range_time
+        
+        self.random_time = self.get_from_time() + random_range_time
+        return True
 
     def get_freq_coef(self):
         return self.freq_coef

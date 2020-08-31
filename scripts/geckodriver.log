@@ -679,3 +679,15 @@ Exiting due to channel error.
 Exiting due to channel error.
 Exiting due to channel error.
 Exiting due to channel error.
+1598810009438	geckodriver	INFO	Listening on 127.0.0.1:51435
+1598810010436	mozrunner::runner	INFO	Running command: "/Applications/Firefox.app/Contents/MacOS/firefox-bin" "--marionette" "-foreground" "-no-remote" "-profile" "/var/folders/yc/gj8rkfbx1hg5h5jwhlgq4zh00000gn/T/rust_mozprofilepq4Om7"
+console.error: SearchCache: "_readCacheFile: Error reading cache file:" (new Error("", "(unknown module)"))
+1598810014076	Marionette	INFO	Listening on port 51447
+1598810014097	Marionette	WARN	TLS certificate errors will be ignored for this session
+1598810014175	Marionette	INFO	Stopped listening on port 51447
+console.error: services.settings: 
+  main/messaging-experiments Signature failed  TypeError: NetworkError when attempting to fetch resource.
+console.error: services.settings: 
+  main/message-groups Signature failed  TypeError: NetworkError when attempting to fetch resource.
+console.error: Region.jsm: "Error fetching region" (new TypeError("NetworkError when attempting to fetch resource.", ""))
+console.error: Region.jsm: "Failed to fetch region" (new Error("NO_RESULT", "resource://gre/modules/Region.jsm", 343))

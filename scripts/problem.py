@@ -1,16 +1,18 @@
 import datetime
-
+import logics
 
 from datetime import time
-from bugtracker_entry import BugTrackerEntry
 
 
 class Problem:
 
-    def __init__(self, problem_num, date, sp, longtitude=4):
+    # By default it's -1. It'll change in main.py
+    AVG_SP_TIME = -1
+
+    def __init__(self, problem_num, sp, date, longtitude=4):
         self.problem_num = problem_num
-        self.date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M.%f')
         self.sp = sp
+        self.date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M.%f')
         self.entries_longtitude = self.sp * longtitude
         self.total_spent_hours = 0.
         # sequence number(kind of id like #1, #2, #3) of entry written to bugtracker
@@ -45,10 +47,10 @@ class Problem:
 
     def __add_total_spent_hours(self, hours):
         self.total_spent_hours += hours
-        return self.__is_more_than_sp_hours(BugTrackerEntry.AVG_SP_TIME)
+        return self.is_more_than_sp_hours(AVG_SP_TIME)
 
 
-    def __is_more_than_sp_hours(self, avg_sp_time):
+    def is_more_than_sp_hours(self, avg_sp_time):
         return self.total_spent_hours > avg_sp_time * self.sp
 
     def get_problem_year(self):

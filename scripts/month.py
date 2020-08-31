@@ -33,6 +33,7 @@ class Month:
             self.month_num = datetime.datetime.today().month
             self.last_day_num = datetime.datetime.today().day
         else:
+            self.year_num = datetime.datetime.today().year
             self.month_num = datetime.datetime.today().month-1
             # if previous month is less than January then we need to subtract a year and set month_num = 12
             if(self.month_num == 0):
