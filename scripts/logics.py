@@ -3,6 +3,8 @@ import datetime
 import calendar
 
 from random import randrange 
+from problem import Problem
+from month import Month
 
 def get_item_carousel_algorithm(task_entries):
     freq_coef_sum = 0.
@@ -23,7 +25,8 @@ def get_item_carousel_algorithm(task_entries):
 def calculate_avg_sp_time(months_list, problems_list):
         working_days_number = 0
         for month in months_list:
-            working_days_number += month.get_working_days_number()
+            wd_number, _ = month.get_working_days_number()
+            working_days_number += wd_number
 
         sp_number = Problem.get_total_sps(problems_list)
         # Formula to calculate how many hours was delegated to developing throught the given perioud

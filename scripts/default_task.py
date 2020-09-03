@@ -1,4 +1,5 @@
-
+from random import randrange
+import datetime
 
 class Default_Task:
     
@@ -46,18 +47,30 @@ class Default_Task:
         return self.to_time
 
 
+    def get_is_work_task(self):
+        return self.is_work_task
+
     def __get_inner_random_time(self):
         delta_range = self.get_to_time() - self.get_from_time()
         # The same as divide by 0.25, since all the time has to be dividable by 0.25
         delta_range *= 4
         delta_range = int(delta_range)
-
-        random_range_time = randrange(delta_range)
-        # Translate again into time
-        random_range_time *= 0.25
+        if(delta_range != 0):
+            random_range_time = randrange(delta_range)
+            # Translate again into time
+            random_range_time *= 0.25
+        else:
+            random_range_time = 0
         
-        self.random_time = self.get_from_time() + random_range_time
-        return True
+        return self.get_from_time() + random_range_time
+        
 
     def get_freq_coef(self):
         return self.freq_coef
+
+    
+    def __str__(self):
+        if(not isinstance(self.date, datetime.date)):
+            print("HUINIA SOBACHA!!!!")
+            print(type(self.date))
+        return "Task: " + self.name + "; time: " + str(self.random_time) + "; freq_coef: " + str(self.freq_coef) + "; date: " + str(self.date) + " ."

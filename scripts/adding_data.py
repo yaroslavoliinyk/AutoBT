@@ -40,19 +40,24 @@ class DataAdder:
         print(self.this_month.get_hours())
         print(self.prev_month.get_last_commit())
         print(self.this_month.get_last_commit())
-        time.sleep(300)
 
 
     def __make_months_hours(self, month):
         #! Not correct. Also applies for current month.
         #! Since it's not obligatory to start new month from date 1
-        # Corrected above error   
-        self.driver.get(month.get_link())
-        elem = self.driver.find_element_by_class_name("hours")
-        month.set_hours(float(elem.text))
+        # Corrected above error
+        # ? Hard code
+        # ? self.driver.get(month.get_link())
+        # ? elem = self.driver.find_element_by_class_name("hours")
+        # ? month.set_hours(float(elem.text))
+        if(not month.get_current_month()):
+            month.set_hours(87.)
+        else:
+            month.set_hours(0.)
+
         try: 
             elem = self.driver.find_element_by_class_name("spent_on")
-            month.set_last_commit(datetime.datetime.strptime(elem.text, '%Y-%m-%d %H:%M.%f'))
+            month.set_last_commit(datetime.datetime.strptime(elem.text, '%Y-%m-%d'))
         except NoSuchElementException as e:
             month.set_last_commit(None)
                 
@@ -61,7 +66,7 @@ class DataAdder:
     def __update_task_dt(self, task_id, task_tb):
         website_page = self.website_name + "/issues/" + str(task_id)
         self.driver.get(website_page)
-        time.sleep(5)
+        time.sleep(0.5)
         elems = self.driver.find_elements_by_tag_name("a")
         for elem in elems:
             if(elem.get_property("title") != ""):
@@ -94,7 +99,7 @@ class DataAdder:
             
             elem = self.driver.find_element_by_name("login")
             elem.send_keys(Keys.RETURN)
-            time.sleep(5)
+            time.sleep(0.5)
             # Was not logged in
             return False
         except NoSuchElementException as e:
