@@ -22,7 +22,7 @@ driver = webdriver.Chrome(ChromeDriverManager().install())
 connection = sqlite3.connect(DB_NAME)
 
 # ! THIS CHANGES MANUALLY BY USER:
-INCLUDE_PREVIOUS_MONTH = True
+INCLUDE_PREVIOUS_MONTH = False
 INCLUDE_THIS_MONTH     = True
 
 class MainConstruction:
