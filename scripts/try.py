@@ -16,5 +16,9 @@ print(elapsed_time)
 days_delta = elapsed_time.days
 
 
+l = [1, 2, 3, 4, 5]
+print(l.pop(0))
+print(l.pop(0))
+print(l)
 #for day_dt in range(days_delta):
     #print(START_DT+timedelta(days=day_dt))

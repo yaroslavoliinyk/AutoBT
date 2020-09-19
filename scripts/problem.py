@@ -52,8 +52,8 @@ class Problem:
         return self.sp
 
 
-    def get_task_dict(self):
-        return self.task_dict
+    def get_task_list(self):
+        return self.task_list
 
 
     def get_problem_num(self):
@@ -67,11 +67,10 @@ class Problem:
         str_represent += str(self.date)
         str_represent += "\n"
         str_represent += "\tTAKSKS:\n"
-        for task_list in list(self.task_dict.values()):
-            for task in task_list:
-                str_represent += "\t-----"
-                str_represent += task.__str__()
-                str_represent += "-----\n"
+        for task in self.task_list:
+            str_represent += "\t-----"
+            str_represent += task.__str__()
+            str_represent += "-----\n"
         str_represent += "\n"
         str_represent += "Hours spent on problem: "
         str_represent += str(self.total_spent_hours)
@@ -81,14 +80,6 @@ class Problem:
         
         return str_represent
 
-    @staticmethod
-    def get_problems_by_month(tasks_list, month_number):
-        month_problems = []
-        for problem in problems_list:
-            if(month_number == problem.get_problems_month()):
-                month_problems.append(problem)
-        
-        return month_problems
 
     @staticmethod
     def get_total_sps(problems_list):

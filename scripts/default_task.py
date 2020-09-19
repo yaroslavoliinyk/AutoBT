@@ -3,7 +3,7 @@ import datetime
 
 class Default_Task:
     
-    def __init__(self, name, from_time, to_time, freq_coef, is_work_task):
+    def __init__(self, name, from_time, to_time, freq_coef, is_work_task, problem_number="7571"):
         self.name = name
         self.from_time = from_time
         self.to_time = to_time
@@ -15,6 +15,7 @@ class Default_Task:
         self.date = None
         # The random time estimated for the concrete task
         self.random_time = self.__get_inner_random_time()
+        self.problem_number = problem_number
 
     #------- These two values are filled later on --------
 
@@ -38,6 +39,10 @@ class Default_Task:
     def get_name(self):
         return self.name
 
+
+    def get_problem_number(self):
+        return self.problem_number
+
     
     def get_from_time(self):
         return self.from_time
@@ -49,6 +54,7 @@ class Default_Task:
 
     def get_is_work_task(self):
         return self.is_work_task
+
 
     def __get_inner_random_time(self):
         delta_range = self.get_to_time() - self.get_from_time()

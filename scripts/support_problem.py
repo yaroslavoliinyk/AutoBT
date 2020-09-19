@@ -1,4 +1,3 @@
-from month import Month
 from default_task import Default_Task
 from random import randrange
 from problem import Problem
@@ -20,10 +19,12 @@ class SupportProblem:
         self.support_task_list = []
 
 
-    def add_task_and_time(self, new_random_support_task):
+    def add_task_and_time(self, new_random_support_task, random_date):
             # Adding new task
             new_support_task = Default_Task(new_random_support_task.get_name(), new_random_support_task.get_from_time(), new_random_support_task.get_to_time(),
                                                     new_random_support_task.get_freq_coef(), new_random_support_task.get_is_work_task())
+            
+            new_support_task.set_date(random_date)
             self.support_task_list.append(new_support_task)
             # Subtracting time
             self.support_time -= new_support_task.get_random_time()
