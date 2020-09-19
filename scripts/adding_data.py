@@ -36,25 +36,25 @@ class DataAdder:
     def update_months_hours(self):
         self.__make_months_hours(self.prev_month)
         self.__make_months_hours(self.this_month)
+        print("-----------------------------")
+        print("-----------------------------")
+        print("-----------------------------")
+        print("-----------------------------")
         print(self.prev_month.get_hours())
         print(self.this_month.get_hours())
         print(self.prev_month.get_last_commit())
         print(self.this_month.get_last_commit())
+        print("-----------------------------")
+        print("-----------------------------")
+        print("-----------------------------")
+        print("-----------------------------")
 
 
     def __make_months_hours(self, month):
-        #! Not correct. Also applies for current month.
-        #! Since it's not obligatory to start new month from date 1
-        # Corrected above error
-        # ? Hard code
-        # ? self.driver.get(month.get_link())
-        # ? elem = self.driver.find_element_by_class_name("hours")
-        # ? month.set_hours(float(elem.text))
-        if(not month.get_current_month()):
-            month.set_hours(87.)
-        else:
-            month.set_hours(0.)
-
+        self.driver.get(month.get_link())
+        elem = self.driver.find_element_by_class_name("hours")
+        month.set_hours(float(elem.text))
+        
         try: 
             elem = self.driver.find_element_by_class_name("spent_on")
             month.set_last_commit(datetime.datetime.strptime(elem.text, '%Y-%m-%d'))

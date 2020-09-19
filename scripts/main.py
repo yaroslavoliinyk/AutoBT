@@ -2,7 +2,9 @@ import sys
 import time
 import sqlite3
 import logics
+import datetime
 
+from datetime import date, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from adding_data import DataAdder
@@ -18,6 +20,10 @@ WEBSITE = "https://bugtracker.allbau-software.de"
 PREVIOUS_MONTH = Month('https://bugtracker.allbau-software.de/time_entries?utf8=%E2%9C%93&f%5B%5D=spent_on&op%5Bspent_on%5D=lm&f%5B%5D=user_id&op%5Buser_id%5D=%3D&v%5Buser_id%5D%5B%5D=me&f%5B%5D=&c%5B%5D=project&c%5B%5D=spent_on&c%5B%5D=user&c%5B%5D=activity&c%5B%5D=issue&c%5B%5D=comments&c%5B%5D=hours', False)
 THIS_MONTH = Month('https://bugtracker.allbau-software.de/time_entries?utf8=%E2%9C%93&f%5B%5D=spent_on&op%5Bspent_on%5D=m&f%5B%5D=user_id&op%5Buser_id%5D=%3D&v%5Buser_id%5D%5B%5D=me&f%5B%5D=&c%5B%5D=project&c%5B%5D=spent_on&c%5B%5D=user&c%5B%5D=activity&c%5B%5D=issue&c%5B%5D=comments&c%5B%5D=hours', True)
 WRITE_WEBSITE = "https://bugtracker.allbau-software.de/issues/7793/time_entries/new"
+# Start and end dates for filling the fields
+START_DATE = None
+END_DATE = None
+DATE_LIST = list()
 driver = webdriver.Chrome(ChromeDriverManager().install())
 connection = sqlite3.connect(DB_NAME)
 
@@ -43,7 +49,8 @@ class MainConstruction:
     def fulfill_problems_list(self):
         command = "SELECT * FROM Tasks;"
         self.conn.execute(command)
-        for entry in self.conn.fetchall():
+        all_problems = self.conn.fetchall()
+        for entry in all_problems:
             problem = Problem(entry[0], entry[1], entry[2])
             self.problems_list.append(problem)
 
@@ -69,16 +76,22 @@ class MainConstruction:
                 random_task = logics.get_item_carousel_algorithm(self.working_tasks_list)
                 new_random_task = Default_Task(random_task.get_name(), random_task.get_from_time(), 
                                     random_task.get_to_time(), random_task.get_freq_coef(), random_task.get_is_work_task())
-                problem.add_task_and_time(new_random_task)
+                problem.add_task_and_time(new_random_task, START_DATE, END_DATE)
+            print("!!! PROBLEM !!!", problem.__str__())
 
 
-    def fulfill_support_problem_with_tasks(self):
-        self.support_problem = SupportProblem(self.months_list)
+    # Sort ascendingly problems by data
+    def sort_problems_list(self):
+        self.problems_list.sort(key=lambda problem: problem.get_date())
+
+
+    def fulfill_support_problem_with_tasks(self, date_list):
+        self.support_problem = SupportProblem(date_list)
         
         command = "SELECT * FROM SupportTaskTable;"
         self.conn.execute(command)
         entries = self.conn.fetchall()
-        
+        print("ENTRIES", entries)
         # Special cases of Support Task
         daily = Default_Task(entries[0][1], entries[0][2], entries[0][3], entries[0][4], False)
         tech_improvement = Default_Task(entries[3][1], entries[3][2], entries[3][3], entries[3][4], False)
@@ -209,26 +222,59 @@ class MainConstruction:
 
 
 
+def fulfill_date_list():
+    elapsed_time = END_DATE - START_DATE
+    days_delta = elapsed_time.days
+    for day_dt in range(days_delta):
+        DATE_LIST.append(START_DATE+timedelta(days=day_dt))
+
 
 if __name__ == "__main__":
+    # Input format
+    # 2020-11-30
+    # 2020-01-21
+    #start_dt = input()
+    #end_dt   = input()
+    START_DATE = date.fromisoformat("2020-09-01")
+    END_DATE = date.fromisoformat("2020-09-10")
+    fulfill_date_list()
+
+    print(DATE_LIST)
+
     main_constr = MainConstruction()
     main_constr.update_data()
-    #time.sleep(1000)
     main_constr.fulfill_problems_list()
+    # Print all problems
+    for problem in main_constr.problems_list:
+        print(problem.__str__())
+        print("\n")
+    
+    # ! I need somehow to get rid of it.
     main_constr.fulfill_months_list()
+
     main_constr.fulfill_working_tasks_list()
-    avg_sp_time = logics.calculate_avg_sp_time(main_constr.months_list, main_constr.problems_list)
+    for work_task in main_constr.working_tasks_list:
+        print(work_task)
+        print("------------\n")
+    
+    avg_sp_time = logics.calculate_avg_sp_time(DATE_LIST, main_constr.problems_list)
     Problem.AVG_SP_TIME = avg_sp_time
+    # Here is OK.
     main_constr.fulfill_problems_with_tasks()
-    for month in main_constr.months_list:
+    main_constr.sort_problems_list()
+    '''for month in main_constr.months_list:
         print("MONTH TIME")
         print("Month from: ", month.get_start_day_num())
         print("Month to: ", month.get_last_day_num())
         print(month.get_work_time_a_day())
-        print(month.get_hours())
-    main_constr.fulfill_support_problem_with_tasks()
+        print(month.get_hours())'''
+    
+    main_constr.fulfill_support_problem_with_tasks(DATE_LIST)
+    print(main_constr.support_problem)
+    time.sleep(300000)
+    # ! Here is incorrect. Need to make new logics
     main_constr.write_to_bugtracker()
-    time.sleep(300)
+    time.sleep(3000)
     driver.close()
     connection.close()
     # dev branch for coding

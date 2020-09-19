@@ -71,6 +71,5 @@ class Default_Task:
     
     def __str__(self):
         if(not isinstance(self.date, datetime.date)):
-            print("HUINIA SOBACHA!!!!")
             print(type(self.date))
         return "Task: " + self.name + "; time: " + str(self.random_time) + "; freq_coef: " + str(self.freq_coef) + "; date: " + str(self.date) + " ."

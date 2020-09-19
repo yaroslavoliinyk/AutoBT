@@ -2,6 +2,8 @@ import datetime
 import calendar
 import logics
 
+from datetime import timedelta
+
 class Month:
 
     # Number of hours in one month of work
@@ -44,27 +46,20 @@ class Month:
         # Time left for support task
         self.support_task_time = None'''
        
-        # ! The code I'm using because it's fricking September, the 3rd month I'm not filling 
-        # ! that stuff    
         if(self.current_month == True):
             self.year_num = datetime.datetime.today().year
-            # ? Hard code
-            # ? self.month_num = datetime.datetime.today().month-1
-            self.month_num = 8
-            # ? Hard code
-            # ? self.last_day_num = datetime.datetime.today().day
+            self.month_num = datetime.datetime.today().month-1
+            self.last_day_num = datetime.datetime.today().day
             self.last_day_num = 31
         else:
             self.year_num = datetime.datetime.today().year
-            # ? Hard code
-            # ? self.month_num = datetime.datetime.today().month-2
+            self.month_num = datetime.datetime.today().month-2
             self.month_num = 7
             # if previous month is less than January then we need to subtract a year and set month_num = 12
             if(self.month_num == 0):
                 self.year_num = datetime.datetime.today().year-1
                 self.month_num = 12
-            # ? Hard code
-            # ? self.last_day_num = calendar.monthrange(self.year_num, self.month_num)[1]
+            self.last_day_num = calendar.monthrange(self.year_num, self.month_num)[1]
             self.last_day_num = calendar.monthrange(self.year_num, 7)[1]
         # Time left for support task
         self.support_task_time = None
@@ -81,11 +76,10 @@ class Month:
     def set_last_commit(self, last_commit):
         self.last_commit = last_commit
         # Means that there are no records about commits this month
-        # ? Hard code
-        # ? if(last_commit is None):
-        # ?    self.start_day_num = 1
-        # ?else:
-        # ?    self.start_day_num = last_commit.day+1
+        if(last_commit is None):
+            self.start_day_num = 1
+        else:
+            self.start_day_num = last_commit.day+1
         if(self.current_month):
             self.start_day_num = 1
         else:
