@@ -31,23 +31,6 @@ class DataAdder:
             print("Logging in...")
         for task_id in self.tasks:
             self.__update_task_dt(task_id, TASKS_TABLE)
-        
-
-    def update_months_hours(self):
-        self.__make_months_hours(self.prev_month)
-        self.__make_months_hours(self.this_month)
-        print("-----------------------------")
-        print("-----------------------------")
-        print("-----------------------------")
-        print("-----------------------------")
-        print(self.prev_month.get_hours())
-        print(self.this_month.get_hours())
-        print(self.prev_month.get_last_commit())
-        print(self.this_month.get_last_commit())
-        print("-----------------------------")
-        print("-----------------------------")
-        print("-----------------------------")
-        print("-----------------------------")
 
 
     def __make_months_hours(self, month):

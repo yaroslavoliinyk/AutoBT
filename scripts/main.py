@@ -17,33 +17,29 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 DB_NAME = "BugTracker.db"
 WEBSITE = "https://bugtracker.allbau-software.de"
-PREVIOUS_MONTH = Month('https://bugtracker.allbau-software.de/time_entries?utf8=%E2%9C%93&f%5B%5D=spent_on&op%5Bspent_on%5D=lm&f%5B%5D=user_id&op%5Buser_id%5D=%3D&v%5Buser_id%5D%5B%5D=me&f%5B%5D=&c%5B%5D=project&c%5B%5D=spent_on&c%5B%5D=user&c%5B%5D=activity&c%5B%5D=issue&c%5B%5D=comments&c%5B%5D=hours', False)
-THIS_MONTH = Month('https://bugtracker.allbau-software.de/time_entries?utf8=%E2%9C%93&f%5B%5D=spent_on&op%5Bspent_on%5D=m&f%5B%5D=user_id&op%5Buser_id%5D=%3D&v%5Buser_id%5D%5B%5D=me&f%5B%5D=&c%5B%5D=project&c%5B%5D=spent_on&c%5B%5D=user&c%5B%5D=activity&c%5B%5D=issue&c%5B%5D=comments&c%5B%5D=hours', True)
+#PREVIOUS_MONTH = Month('https://bugtracker.allbau-software.de/time_entries?utf8=%E2%9C%93&f%5B%5D=spent_on&op%5Bspent_on%5D=lm&f%5B%5D=user_id&op%5Buser_id%5D=%3D&v%5Buser_id%5D%5B%5D=me&f%5B%5D=&c%5B%5D=project&c%5B%5D=spent_on&c%5B%5D=user&c%5B%5D=activity&c%5B%5D=issue&c%5B%5D=comments&c%5B%5D=hours', False)
+#THIS_MONTH = Month('https://bugtracker.allbau-software.de/time_entries?utf8=%E2%9C%93&f%5B%5D=spent_on&op%5Bspent_on%5D=m&f%5B%5D=user_id&op%5Buser_id%5D=%3D&v%5Buser_id%5D%5B%5D=me&f%5B%5D=&c%5B%5D=project&c%5B%5D=spent_on&c%5B%5D=user&c%5B%5D=activity&c%5B%5D=issue&c%5B%5D=comments&c%5B%5D=hours', True)
 WRITE_WEBSITE = "https://bugtracker.allbau-software.de/issues/7793/time_entries/new"
 # Start and end dates for filling the fields
 START_DATE = None
 END_DATE = None
 DATE_LIST = list()
+# Number of hours of work
+AVG_HOUR_PER_DAY = 6.5
+WORK_COEF = 0.75
+SUPPORT_COEF = 1.-WORK_COEF
+
 driver = webdriver.Chrome(ChromeDriverManager().install())
 connection = sqlite3.connect(DB_NAME)
 
-# ! THIS CHANGES MANUALLY BY USER:
-INCLUDE_PREVIOUS_MONTH = False
-INCLUDE_THIS_MONTH     = True
 
 class MainConstruction:
     def __init__(self):
-        self.data_adder = DataAdder(DB_NAME, WEBSITE, driver, connection, PREVIOUS_MONTH, THIS_MONTH)
         self.conn = connection.cursor()
         self.problems_list = []
-        self.months_list = []
         self.working_tasks_list = []
         # Will be assigned on fulfill_support...
         self.support_problem = None
-
-    def update_data(self):
-        self.data_adder.update_datetimes()
-        self.data_adder.update_months_hours()
 
 
     def fulfill_problems_list(self):
@@ -76,9 +72,9 @@ class MainConstruction:
                 random_task = logics.get_item_carousel_algorithm(self.working_tasks_list)
                 new_random_task = Default_Task(random_task.get_name(), random_task.get_from_time(), 
                                     random_task.get_to_time(), random_task.get_freq_coef(), random_task.get_is_work_task())
-                problem.add_task_and_time(new_random_task, START_DATE, END_DATE)
+                problem.add_task_and_time(new_random_task)
             print("!!! PROBLEM !!!", problem.__str__())
-
+        time.sleep(300000)
 
     # Sort ascendingly problems by data
     def sort_problems_list(self):
@@ -86,7 +82,8 @@ class MainConstruction:
 
 
     def fulfill_support_problem_with_tasks(self, date_list):
-        self.support_problem = SupportProblem(date_list)
+        support_time = len(date_list) * AVG_HOUR_PER_DAY * SUPPORT_COEF
+        self.support_problem = SupportProblem(date_list, support_time)
         
         command = "SELECT * FROM SupportTaskTable;"
         self.conn.execute(command)
@@ -106,22 +103,13 @@ class MainConstruction:
         self.support_problem_list = entries
         self.support_problem_list = self.__make_tasks_from_support_problem_list(self.support_problem_list)
         print(self.support_problem_list)
-        for month in self.months_list:
-            remained_support_task_time = month.get_support_task_time()
-            while(remained_support_task_time > 0):
-                random_support_task = logics.get_item_carousel_algorithm(self.support_problem_list)
-                new_random_support_task = Default_Task(random_support_task.get_name(), random_support_task.get_from_time(), 
+        while(self.support_problem.get_support_time() > 0.):
+            random_support_task = logics.get_item_carousel_algorithm(self.support_problem_list)
+            new_random_support_task = Default_Task(random_support_task.get_name(), random_support_task.get_from_time(), 
                                     random_support_task.get_to_time(), random_support_task.get_freq_coef(), random_support_task.get_is_work_task())
-                self.support_problem.add_task_and_time(month.get_month_num(), new_random_support_task)
-                remained_support_task_time -= new_random_support_task.get_random_time()
-        
-        print("SUPPORT TASKS")
-        print("_____________")
-        print("_____________")
-        #print(self.support_problem.get_support_task_list())
-        print("_____________")
-        print("_____________")
-        
+            # Here's where support time subtracts
+            self.support_problem.add_task_and_time(month.get_month_num(), new_random_support_task)
+            
 
     def __make_tasks_from_support_problem_list(self, support_problem_list):
         support_task_list = []
@@ -173,16 +161,6 @@ class MainConstruction:
         elem.clear()
         time.sleep(0.25)
         str_date = ""
-        if(len(str(task_date.day)) < 2):
-            task_date_day = "0" + str(task_date.day)
-        else:
-            task_date_day = str(task_date.day)
-
-        if(len(str(task_date.month)) < 2):
-            task_date_month = "0" + str(task_date.month)
-        else:
-            task_date_month = str(task_date.month)
-
         str_date += str(task_date_day)
         str_date += str(task_date_month)
         str_date += str(task_date.year)
@@ -220,13 +198,17 @@ class MainConstruction:
         elem.click()
 
 
-
-
 def fulfill_date_list():
     elapsed_time = END_DATE - START_DATE
     days_delta = elapsed_time.days
     for day_dt in range(days_delta):
         DATE_LIST.append(START_DATE+timedelta(days=day_dt))
+    # Only workdays
+    dates_list = list()
+    dates_list.extend(DATE_LIST)
+    dates_list = list(filter(lambda date_day: date_day.weekday()<6, DATE_LIST))
+    DATE_LIST.clear()
+    DATE_LIST.extend(dates_list)
 
 
 if __name__ == "__main__":
@@ -237,12 +219,12 @@ if __name__ == "__main__":
     #end_dt   = input()
     START_DATE = date.fromisoformat("2020-09-01")
     END_DATE = date.fromisoformat("2020-09-10")
+    # Only workdays
     fulfill_date_list()
 
     print(DATE_LIST)
 
     main_constr = MainConstruction()
-    main_constr.update_data()
     main_constr.fulfill_problems_list()
     # Print all problems
     for problem in main_constr.problems_list:
@@ -273,6 +255,8 @@ if __name__ == "__main__":
     print(main_constr.support_problem)
     time.sleep(300000)
     # ! Here is incorrect. Need to make new logics
+    # Problems: contain tasks with no concrete dates to write to program.
+    # Support Problem: contains everything needed for writing to BT
     main_constr.write_to_bugtracker()
     time.sleep(3000)
     driver.close()

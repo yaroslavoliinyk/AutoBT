@@ -2,10 +2,11 @@ from datetime import datetime
 from datetime import date
 from datetime import timedelta
 
-start_dt = "2010-09-01"
+start_dt = "2010-09-04"
 end_dt   = "2020-09-10"
 
 START_DT = date.fromisoformat(start_dt)
+print(START_DT.weekday())
 END_DT = date.fromisoformat(end_dt)
 
 print(START_DT, END_DT)

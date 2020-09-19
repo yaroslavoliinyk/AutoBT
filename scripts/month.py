@@ -6,11 +6,7 @@ from datetime import timedelta
 
 class Month:
 
-    # Number of hours in one month of work
-    HOURS = 130.
-    AVG_HOUR_PER_DAY = 6.5
-    WORK_COEF = 0.75
-    SUPPORT_COEF = 1.-WORK_COEF
+    
 
 
     def __init__(self, current_month, month_flag=True):

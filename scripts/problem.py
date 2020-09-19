@@ -14,45 +14,13 @@ class Problem:
         self.date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M')
         self.entries_longtitude = self.sp * longtitude
         self.total_spent_hours = 0.
-        # sequence number(kind of id like #1, #2, #3) of entry written to bugtracker
-        self.entry_number = 0
         # list of default tasks used to describe the problem(with dates)
-        self.task_dict = dict()
+        self.task_list = list()
 
 
     # When True - stop ading new tasks
-    def add_task_and_time(self, task, start_date, end_date):
-        '''print("---!!!! TASK !!!!---")
-        print("1", self.entry_number)
-        print("2", task_date.month != self.date.month)
-        print("3", self.date)
-        print("4", task_date)
-        print("5", self.task_dict)
-        print("6", task)
-        print("7", task.get_random_time()) '''
-        working_days_num = Problem.get_working_days_num_in_range(start_date, end_date)
-
-        if(self.entry_number < 2):
-            task_date = self.date
-        elif(self.entry_number < 4):
-            task_date = self.date + datetime.timedelta(days=1)
-        else:
-            task_date = self.date + datetime.timedelta(days=self.entry_number-2)
-        #! Here's pretty silly solution if the task goes on to the next month
-        # TODO: Solve in more beautiful way(for now we will write everything to the first day of the task)
-        
-        if(task_date.month != self.date.month):
-            task_date = self.date
-        
-        time_elapsed = end_date - start_date
-        if task_date not in self.task_dict.keys():
-            self.task_dict[task_date] = []
-        self.task_dict[task_date].append(task)
-        task.set_date(task_date)
-        # The algorithm is as follows: 
-        # entry 0 - day 1; entry 1 - day 1; entry 2 - day 2; entry 3 - day 2;
-        # entry 4 - day 3; entry 5 - day 4; entry 6 - day 5 and so on
-        self.entry_number += 1
+    def add_task(self, task):
+        self.task_list.append(task)
         return self.__add_total_spent_hours(task.get_random_time())
 
 
