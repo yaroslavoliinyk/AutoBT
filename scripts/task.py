@@ -1,7 +1,7 @@
 from random import randrange
 import datetime
 
-class Default_Task:
+class Task:
     
     def __init__(self, name, from_time, to_time, freq_coef, is_work_task, problem_number="7571"):
         self.name = name

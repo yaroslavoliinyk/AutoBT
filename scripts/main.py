@@ -10,7 +10,7 @@ from datetime import date, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from problem import Problem
-from default_task import Default_Task
+from task import Task
 from support_problem import SupportProblem
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -24,10 +24,12 @@ START_DATE = None
 END_DATE = None
 DATE_LIST = list()
 # Number of hours of work
-AVG_HOUR_PER_DAY = 6.5
-WORK_COEF = 0.75
+AVG_HOUR_PER_DAY = 6.
+WORK_COEF = 0.65
 SUPPORT_COEF = 1.-WORK_COEF
-
+# Date from and Date to
+DATE_FROM = "2021-01-12"
+DATE_TO   = "2021-02-20"
 driver = webdriver.Chrome(ChromeDriverManager().install())
 connection = sqlite3.connect(DB_NAME)
 
@@ -46,8 +48,10 @@ class MainConstruction:
         command = "SELECT * FROM Tasks;"
         self.conn.execute(command)
         all_problems = self.conn.fetchall()
+        print(all_problems)
         for entry in all_problems:
-            problem = Problem(entry[0], entry[1], entry[2])
+            print("================DATEEE===============", entry[2])
+            problem = Problem(entry[0], entry[1], "2020-09-14")
             self.problems_list.append(problem)
 
 
@@ -55,22 +59,27 @@ class MainConstruction:
         command = "SELECT * FROM WorkTaskTable;"
         self.conn.execute(command)
         for entry in self.conn.fetchall():
-            work_task = Default_Task(entry[1], entry[2], entry[3], entry[4], True)
+            work_task = Task(entry[1], entry[2], entry[3], entry[4], True)
             self.working_tasks_list.append(work_task)
 
 
     def fulfill_problems_with_tasks(self):
         for problem in self.problems_list:
             while(not problem.is_more_than_sp_hours(Problem.AVG_SP_TIME)):
+                close_to_sp_hours = problem.number_close_to_sp_hours(Problem.AVG_SP_TIME)
                 random_task = logics.get_item_carousel_algorithm(self.working_tasks_list)
-                new_random_task = Default_Task(random_task.get_name(), random_task.get_from_time(), 
+                new_random_task = Task(random_task.get_name(), random_task.get_from_time(), 
                                     random_task.get_to_time(), random_task.get_freq_coef(), random_task.get_is_work_task(), str(problem.get_problem_num()))
+                if(not close_to_sp_hours == 0):
+                    random_task.set_random_time(close_to_sp_hours)
+                    
                 problem.add_task(new_random_task)
             print("!!! PROBLEM !!!", problem.__str__())
 
 
     def fulfill_support_problem_with_tasks(self, date_list):
         support_time = len(date_list) * AVG_HOUR_PER_DAY * SUPPORT_COEF
+        print("================DATEE===============", date_list)
         self.support_problem = SupportProblem(date_list, support_time)
         
         command = "SELECT * FROM SupportTaskTable;"
@@ -78,9 +87,9 @@ class MainConstruction:
         entries = self.conn.fetchall()
         print("ENTRIES", entries)
         # Special cases of Support Task
-        daily = Default_Task(entries[0][1], entries[0][2], entries[0][3], entries[0][4], False)
-        tech_improvement = Default_Task(entries[3][1], entries[3][2], entries[3][3], entries[3][4], False)
-        review_plan_retro = Default_Task(entries[9][1], entries[9][2], entries[9][3], entries[9][4], False)
+        daily = Task(entries[0][1], entries[0][2], entries[0][3], entries[0][4], False)
+        tech_improvement = Task(entries[3][1], entries[3][2], entries[3][3], entries[3][4], False)
+        review_plan_retro = Task(entries[9][1], entries[9][2], entries[9][3], entries[9][4], False)
         
         self.support_problem.fulfill_with_special_tasks(daily, tech_improvement, review_plan_retro)
         # Remove daily, tech_improvement and revoew_plan_retro from support tasks
@@ -93,13 +102,12 @@ class MainConstruction:
         print(self.support_problem_list)
         while(self.support_problem.get_support_time() > 0.):
             random_support_task = logics.get_item_carousel_algorithm(self.support_problem_list)
-            new_random_support_task = Default_Task(random_support_task.get_name(), random_support_task.get_from_time(), 
+            new_random_support_task = Task(random_support_task.get_name(), random_support_task.get_from_time(), 
                                     random_support_task.get_to_time(), random_support_task.get_freq_coef(), random_support_task.get_is_work_task())
             
             random_date_index = randrange(len(DATE_LIST))
             # Here's where support time subtracts
             self.support_problem.add_task_and_time(new_random_support_task, DATE_LIST[random_date_index])
-
 
     # Sort ascendingly problems by data
     def sort_problems_list(self):
@@ -143,7 +151,6 @@ class MainConstruction:
             return True
 
 
-
     def write_to_bugtracker(self):
         driver.get(WRITE_WEBSITE)
         # WRITING SUPPORT TASK
@@ -176,7 +183,7 @@ class MainConstruction:
     def __make_tasks_from_support_problem_list(self, support_problem_list):
         support_task_list = []
         for support_problem in support_problem_list:
-            task = Default_Task(support_problem[1], support_problem[2], support_problem[3], support_problem[4], False)
+            task = Task(support_problem[1], support_problem[2], support_problem[3], support_problem[4], False)
             support_task_list.append(task)
         
         return support_task_list
@@ -245,6 +252,7 @@ class MainConstruction:
         elem.click()
 
 
+
 def fulfill_date_list():
     elapsed_time = END_DATE - START_DATE
     days_delta = elapsed_time.days
@@ -258,9 +266,6 @@ def fulfill_date_list():
     DATE_LIST.extend(dates_list)
 
 
-
-
-
 if __name__ == "__main__":
     # Input format
     # 2020-11-30
@@ -268,8 +273,8 @@ if __name__ == "__main__":
     #start_dt = input()
     #end_dt   = input()
     
-    START_DATE = date.fromisoformat("2020-09-01")
-    END_DATE = date.fromisoformat("2020-09-12")
+    START_DATE = date.fromisoformat(DATE_FROM)
+    END_DATE = date.fromisoformat(DATE_TO)
     # Only workdays
     fulfill_date_list()
 

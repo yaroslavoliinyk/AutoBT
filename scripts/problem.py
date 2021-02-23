@@ -11,7 +11,8 @@ class Problem:
     def __init__(self, problem_num, sp, date, longtitude=4):
         self.problem_num = problem_num
         self.sp = sp
-        self.date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M')
+        print("============DATE============", date)
+        self.date = datetime.datetime.strptime(date, '%Y-%m-%d')
         self.entries_longtitude = self.sp * longtitude
         self.total_spent_hours = 0.
         # list of default tasks used to describe the problem(with dates)
@@ -24,14 +25,17 @@ class Problem:
         return self.__add_total_spent_hours(task.get_random_time())
 
 
-    def __add_total_spent_hours(self, hours):
-        self.total_spent_hours += hours
-        return self.is_more_than_sp_hours(self.AVG_SP_TIME)
-
-
     def is_more_than_sp_hours(self, avg_sp_time):
         return self.total_spent_hours > avg_sp_time * self.sp
 
+
+    def number_close_to_sp_hours(self, avg_sp_time, diff=2.):
+        if(self.total_spent_hours + diff*self.sp >= avg_sp_time * self.sp):
+            return diff * self.sp
+        else:
+            return 0
+
+    
     def get_problem_year(self):
         return self.date.year
 
@@ -58,6 +62,11 @@ class Problem:
 
     def get_problem_num(self):
         return self.problem_num
+
+    
+    def __add_total_spent_hours(self, hours):
+        self.total_spent_hours += hours
+        return self.is_more_than_sp_hours(self.AVG_SP_TIME)
 
 
     def __str__(self):
